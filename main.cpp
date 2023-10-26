@@ -202,7 +202,7 @@ void animate()
             centerE2.x += velocity;
             centerE2.y -= factor*velocity;
 
-            if(centerE2.x>boardRight-radiusE2 || centerE2.y< (boardBottom+boardTop)/2)
+            if(centerE2.x>boardRight-radiusE2)
             {
                 enemy2State = 1;
             }
