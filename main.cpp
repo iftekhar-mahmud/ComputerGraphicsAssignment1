@@ -207,6 +207,50 @@ void animate()
                 enemy2State = 1;
             }
         }
+         if(enemy2State == 0)
+        {
+            factor = 1;
+            centerE2.x += velocity;
+            centerE2.y -= factor*velocity;
+
+            if(centerE2.x>boardRight-radiusE2)
+            {
+                enemy2State = 1;
+            }
+        }
+else if(enemy2State == 1)
+        {
+            factor = 1;
+            centerE2.x += velocity;
+            centerE2.y += factor*velocity;
+
+            if(centerE2.x>boardRight-radiusE2)
+            {
+                enemy2State = 2;
+            }
+        }
+        else if(enemy2State == 2)
+        {
+            factor = 1;
+            centerE2.x -= velocity;
+            //centerE.y += factor * velocity;
+
+            if(centerE2.x < (boardLeft+radiusE2))
+            {
+                enemy2State = 3;
+            }
+        }
+         else if(enemy2State == 3)
+        {
+            factor = 1;
+            centerE2.x += velocity;
+            centerE2.y += factor *velocity;
+
+            if(centerE2.x>(boardLeft+boardRight)/2 || centerE2.y>(boardTop-radiusE2))
+            {
+                enemy2State = 0;
+            }
+        }
         /*double distAE = sqrt(pow((centerE.x-centerA.x),2) + pow((centerE.y-centerA.y),2));
         if(distAE <= radiusA+radiusE)
         {
