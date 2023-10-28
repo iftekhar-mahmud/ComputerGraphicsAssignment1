@@ -19,10 +19,12 @@ int boardTop = 165;
 
 struct Point centerE1 = {100, 162}; //Enemy1 Center Coordinate
 struct Point centerE2 = {22, 162}; //Enemy2 Center Coordinate
-struct Point centerA = {100, 85}; //Agent Center Coordinate
+struct Point centerA1 = {40, 70}; //Agent1 Center Coordinate
+struct Point centerA2 = {30, 40}; //Agent2 Center Coordinate
 float radiusE1 = 5; //Enemy1 Radius
 float radiusE2 = 5; //Enemy2 Radius
-float radiusA = 10; //Agent Radius
+float radiusA1 = 3; //Agent1 Radius
+float radiusA2 = 3; //Agent2 Radius
 float velocity = 0.02;
 
 bool isAgentDestroyed = false;
@@ -128,13 +130,22 @@ void display(void)
     }
     glPopMatrix();
 
-    //Agent
+    //Agents
     if(!isAgentDestroyed)
     {
         glColor3f(0,1,0);
         glPushMatrix();
         {
-            drawCircleWithPolygon(centerA.x, centerA.y, radiusA, 40);
+            drawCircleWithPolygon(centerA1.x, centerA1.y, radiusA1, 40);
+        }
+        glPopMatrix();
+    }
+    if(!isAgentDestroyed)
+    {
+        glColor3f(0,1,1);
+        glPushMatrix();
+        {
+            drawCircleWithPolygon(centerA2.x, centerA2.y, radiusA2, 40);
         }
         glPopMatrix();
     }
@@ -154,7 +165,7 @@ void animate()
         if(enemy1State == 0)
         {
             factor = 1;
-            //centerE.x += velocity;
+
             centerE1.y -= velocity;
 
             if(centerE1.x<boardBottom-radiusE1 ||centerE1.y<(boardBottom+radiusE1) )
@@ -177,7 +188,7 @@ void animate()
         {
             factor = 1;
             centerE1.x -= velocity;
-            //centerE.y += factor * velocity;
+
 
             if(centerE1.x < (boardLeft+radiusE1))
             {
@@ -195,7 +206,7 @@ void animate()
                 enemy1State = 0;
             }
         }
-        // Saikot ekhan theke Enemy 2 er movement ta complete korte parish naki dekh
+
         if(enemy2State == 0)
         {
             factor = 1;
@@ -207,24 +218,13 @@ void animate()
                 enemy2State = 1;
             }
         }
-         if(enemy2State == 0)
+         else if(enemy2State == 1)
         {
             factor = 1;
-            centerE2.x += velocity;
-            centerE2.y -= factor*velocity;
+            centerE2.x -= velocity;
+            centerE2.y += factor*0.04;
 
-            if(centerE2.x>boardRight-radiusE2)
-            {
-                enemy2State = 1;
-            }
-        }
-else if(enemy2State == 1)
-        {
-            factor = 1;
-            centerE2.x += velocity;
-            centerE2.y += factor*velocity;
-
-            if(centerE2.x>boardRight-radiusE2)
+            if(centerE2.x<(boardLeft+boardRight)/2 || centerE2.y>boardTop-radiusE2)
             {
                 enemy2State = 2;
             }
@@ -232,31 +232,49 @@ else if(enemy2State == 1)
         else if(enemy2State == 2)
         {
             factor = 1;
-            centerE2.x -= velocity;
-            //centerE.y += factor * velocity;
+            centerE2.x += velocity;
+            centerE2.y -= factor*velocity;
 
-            if(centerE2.x < (boardLeft+radiusE2))
+            if(centerE2.x<(boardLeft+boardRight)/2 || centerE2.y<(boardBottom+boardTop)/2)
             {
                 enemy2State = 3;
             }
         }
-         else if(enemy2State == 3)
+        else if(enemy2State == 3)
         {
             factor = 1;
-            centerE2.x += velocity;
-            centerE2.y += factor *velocity;
+            centerE2.x -= velocity;
+            centerE2.y += factor*0.01;
 
-            if(centerE2.x>(boardLeft+boardRight)/2 || centerE2.y>(boardTop-radiusE2))
+            if(centerE2.x<boardLeft-radiusE2 || centerE2.y>boardTop-radiusE2)
             {
                 enemy2State = 0;
             }
         }
-        /*double distAE = sqrt(pow((centerE.x-centerA.x),2) + pow((centerE.y-centerA.y),2));
-        if(distAE <= radiusA+radiusE)
+        double distA1E1 = sqrt(pow((centerE1.x-centerA1.x),2) + pow((centerE1.y-centerA1.y),2));
+        double distA1E2 = sqrt(pow((centerE2.x-centerA1.x),2) + pow((centerE2.y-centerA1.y),2));
+        double distA2E1 = sqrt(pow((centerE1.x-centerA2.x),2) + pow((centerE1.y-centerA2.y),2));
+        double distA2E2 = sqrt(pow((centerE2.x-centerA2.x),2) + pow((centerE2.y-centerA2.y),2));
+        if(distA1E1 <= radiusA1+radiusE1)
         {
             isAgentDestroyed = true;
             isGameFinished = true;
-        }*/
+        }
+        if(distA1E2 <= radiusA1+radiusE2)
+        {
+            isAgentDestroyed = true;
+            isGameFinished = true;
+        }
+        if(distA2E1 <= radiusA2+radiusE1)
+        {
+            isAgentDestroyed = true;
+            isGameFinished = true;
+        }
+        if(distA2E2 <= radiusA2+radiusE2)
+        {
+            isAgentDestroyed = true;
+            isGameFinished = true;
+        }
     }
     else
     {
@@ -277,13 +295,32 @@ void keyboard_action(unsigned char key, int x, int y)
 {
     if(!isGameFinished)
     {
-        if(key == 'u' && centerA.y<boardTop-radiusA)
+        switch (key)
         {
-            centerA.y += 0.5;
-        }
-        else if(key == 'd' && centerA.y>boardBottom+radiusA)
-        {
-            centerA.y -= 0.5;
+            case 'u':
+                if (centerA2.y < boardTop - radiusA2)
+                {
+                    centerA2.y += 1;
+                }
+                break;
+            case 'd':
+                if (centerA2.y > boardBottom + radiusA2)
+                {
+                    centerA2.y -= 1;
+                }
+                break;
+            case 'l':
+                if (centerA2.x > boardLeft + radiusA2)
+                {
+                    centerA2.x -= 1;
+                }
+                break;
+            case 'r':
+                if (centerA2.x < boardRight - radiusA2)
+                {
+                    centerA2.x += 1;
+                }
+                break;
         }
     }
 
@@ -294,13 +331,27 @@ void special_action(int key, int x, int y)
 {
     if(!isGameFinished)
     {
-        if(key == GLUT_KEY_LEFT && centerA.x>boardLeft+radiusA)
-        {
-            centerA.x -= 0.5;
-        }
-        else if(key == GLUT_KEY_RIGHT && centerA.x<boardRight-radiusA)
-        {
-            centerA.x += 0.5;
+           switch (key) {
+            case GLUT_KEY_LEFT:
+                if (centerA1.x > boardLeft + radiusA1) {
+                    centerA1.x -= 1;
+                }
+                break;
+            case GLUT_KEY_RIGHT:
+                if (centerA1.x < boardRight - radiusA1) {
+                    centerA1.x += 1;
+                }
+                break;
+            case GLUT_KEY_UP:
+                if (centerA1.y < boardTop - radiusA1) {
+                    centerA1.y += 1;
+                }
+                break;
+            case GLUT_KEY_DOWN:
+                if (centerA1.y > boardBottom + radiusA1) {
+                    centerA1.y -= 1;
+                }
+                break;
         }
     }
 
