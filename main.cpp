@@ -87,7 +87,25 @@ void drawCircleWithTriangles(float cx, float cy, float radius, int slices)
     glEnd();
 }
 
+void gameOverScreen()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(1, 1, 1);
+    char scoreText[50];
+    sprintf(scoreText, "Game Over! Your Score: %d", score);
 
+
+    int textX = 50;
+    int textY = 100;
+
+
+    glRasterPos2i(textX, textY);
+    for (int i = 0; i < strlen(scoreText); i++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, scoreText[i]);
+    }
+
+    glFlush();
+}
 
 void display(void)
 {
@@ -276,13 +294,19 @@ void animate()
             isGameFinished = true;
         }
     }
-    else
+    /*else
     {
         printf("Score : %d\n", score);
         exit(0);
+    }*/
+    if (isGameFinished) {
+        glutDisplayFunc(gameOverScreen); // Switch to game over screen
+    }
+    else {
+        glutPostRedisplay(); // Continue with the game screen
     }
 
-    glutPostRedisplay();
+    //glutPostRedisplay();
 }
 
 void init(void)
@@ -323,6 +347,7 @@ void keyboard_action(unsigned char key, int x, int y)
                 break;
         }
     }
+
 
     glutPostRedisplay();
 }
@@ -369,6 +394,7 @@ int main()
     glutIdleFunc(animate);
     glutKeyboardFunc(keyboard_action);
     glutSpecialFunc(special_action);
+    glutDisplayFunc(display);
     glutMainLoop();
     return 0;
 }
