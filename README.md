@@ -6,4 +6,5 @@ The movement path of the enemy is given in the diagram. The agents can be moved 
 The score is the number of times the “animate” function gets called. When the game finishes the score will be shown in the console. 
 
 Iftekhar Mahmud , ID : 011182073
+
 Md. Abid Hasan Saikot, ID : 011182064
